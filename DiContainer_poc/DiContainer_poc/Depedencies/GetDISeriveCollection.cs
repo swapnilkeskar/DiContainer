@@ -15,16 +15,32 @@
             _serviceDes.Add(new ServiceDescriptor(serviceImplemenation, ServiceLifeTime.Singleton));
         }
 
+        public void AddSingleton<TService>()
+        {
+            _serviceDes.Add(new ServiceDescriptor(typeof(TService), ServiceLifeTime.Singleton));
+        }
+
+
         //Add Trasnsient object
         public void AddTransient<TService>(TService serviceImplemenation)
         {
             _serviceDes.Add(new ServiceDescriptor(serviceImplemenation, ServiceLifeTime.Transient));
         }
 
+        public void AddTransient<TService>()
+        {
+            _serviceDes.Add(new ServiceDescriptor(typeof(TService), ServiceLifeTime.Transient));
+        }
+
 
         public Container BuildContainer()
         {
             return new Container(_serviceDes);
+        }
+
+        public void Clear()
+        {
+            _serviceDes.Clear();
         }
     }
 }

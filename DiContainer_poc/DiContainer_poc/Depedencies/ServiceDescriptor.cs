@@ -7,16 +7,22 @@
         //Get the type information
         public Type ServiceType { get; set; }
 
-        //
+        //Implemention info
         public object ServiceImplementation { get; set; }
 
-        public ServiceLifeTime lifeTime {get;set;}
+        public ServiceLifeTime LifeTime {get;set;}
 
         public ServiceDescriptor(object serviceImplementation, ServiceLifeTime lifetime)
         {
             ServiceType = serviceImplementation.GetType();
             ServiceImplementation = serviceImplementation;
-            lifeTime = lifetime;
+            LifeTime = lifetime;
+        }
+
+        public ServiceDescriptor(Type serviceType, ServiceLifeTime lifetime)
+        {
+            ServiceType = serviceType;
+            LifeTime = lifetime;
         }
     }
 

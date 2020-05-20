@@ -15,7 +15,7 @@
         {
             services = new GetDISeriveCollection();
 
-            //Registers the services
+            //Registers the services.AddTransient<T>(TService T) 
             services.AddTransient<RandomGuidGenerator>(new RandomGuidGenerator());
 
             //build conainer from services 
@@ -23,13 +23,13 @@
         }
 
         [TestMethod]
-        public void TestServiceRegisterd()
+        public void ServiceRegisterd_Test()
         {
             Assert.AreNotEqual(null, container.GetService<RandomGuidGenerator>());
         }
 
         [TestMethod]
-        public void TestServiceNotRegisterd_Returns_Null()
+        public void ServiceNotRegisterd_Returns_Null_Test()
         {
             try
             {
@@ -42,7 +42,7 @@
         }
 
         [TestMethod]
-        public void TestTransientServiceResolved()
+        public void Register_TransientService_With_ServiceType_Parameter_Resolved_Test()
         {
             var service1 = container.GetService<RandomGuidGenerator>();
             var service2 = container.GetService<RandomGuidGenerator>();
@@ -56,6 +56,32 @@
 
             // Guid is not unique so it's transeient service 
             Assert.AreNotEqual(service1Guid, service2Guid);
+        }
+
+        [TestMethod]
+        public void Register_TransientService_Without_ServiceType_Parameter_Resolved_Test()
+        {
+            ClearServiceCollection();
+            //Registers the services.AddSingleton<T>() 
+            services.AddTransient<RandomGuidGenerator>();
+
+            var service1 = container.GetService<RandomGuidGenerator>();
+            var service2 = container.GetService<RandomGuidGenerator>();
+
+            //Service resolved for singleton
+            Assert.IsNotNull(service1);
+            Assert.IsNotNull(service2);
+
+            var service1Guid = service1.UniqueGuid;
+            var service2Guid = service2.UniqueGuid;
+
+            // Guid is not unique so it's transeient service 
+            Assert.AreNotEqual(service1Guid, service2Guid);
+        }
+
+        public void ClearServiceCollection()
+        {
+            services.Clear();
         }
     }
 }

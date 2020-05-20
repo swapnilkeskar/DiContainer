@@ -13,21 +13,34 @@
             _serviceDes = serviceDes;
         }
 
+
         public T GetService<T>()
         {
-            var descriptor = _serviceDes.SingleOrDefault(x => x.ServiceType == typeof(T));
+            return GetService<T>(typeof(T));
+        }
+
+        public T GetService<T>(Type serviceType)
+        {
+            var descriptor = _serviceDes.SingleOrDefault(x => x.ServiceType == serviceType);
 
             if(descriptor == null)
             {
                 throw new Exception ($"Service is not registered for {typeof(T).Name}");
             }
 
-            if (descriptor.lifeTime == ServiceLifeTime.Transient)
+            if (descriptor.ServiceImplementation != null && descriptor.LifeTime == ServiceLifeTime.Singleton)
             {
-                return (T)Activator.CreateInstance(descriptor.ServiceType);                
+                return (T)descriptor.ServiceImplementation;
+            }
+
+            var implementaion = (T)Activator.CreateInstance(descriptor.ServiceType);
+
+            if (descriptor.LifeTime == ServiceLifeTime.Singleton)
+            {
+                descriptor.ServiceImplementation = implementaion;
             }
             
-            return (T)descriptor.ServiceImplementation;
+            return implementaion;
         }
     }
 }
